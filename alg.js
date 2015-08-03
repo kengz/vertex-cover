@@ -6,4 +6,34 @@
 // 	2.3 delete all incident edges of u,v
 // 3. return C
 
+var _ = require('lomath')
+var graphlib = require("graphlib")
+var Graph = graphlib.Graph;
+var gio = require(__dirname+'/gio.js')
 
+var g = gio.importG(__dirname+'/data/g2.json')
+
+// var E = g.edges()
+// console.log(g.nodes())
+// console.log(E)
+
+// g.removeNode('b')
+
+// console.log(g.nodes())
+// console.log(E)
+
+// console.log(_.isEmpty(['']))
+
+function aVC(g) {
+	var C = []
+	while(!_.isEmpty(g.edges())) {
+		var pair = g.edges().pop()
+		_.map(pair, function(i){
+			C.push(i)
+			g.removeNode(i)
+		})
+	}
+	return C
+}
+
+console.log(aVC(g))
