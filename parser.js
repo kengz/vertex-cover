@@ -1,6 +1,8 @@
 // parse from-to:
-// array input - graphlib
+// plain input - graphlib
+// graphlib - plain input
 // graphlib - sigma.js
+// coloring sigma.js
 
 // dependencies
 var _ = require('lomath')
@@ -9,9 +11,9 @@ var Graph = graphlib.Graph;
 var gio = require(__dirname+'/gio.js')
 
 // sample data
-var nodes = ['a','b','c','d']
+var nodes = ['a','b','c','d','e']
 var edges = [
-'a-b:1', 'a-c:2', 'a-d:3', 'b-c:4'
+'a-b:1', 'a-c:2', 'a-d:3', 'b-c:4', 'b-e:5', 'c-e:6'
 ]
 var pg = {
 	nodes: nodes,
@@ -157,5 +159,5 @@ module.exports = {
 // console.log(sg.nodes)
 // console.log(sg.edges)
 
-// gio.exportG(__dirname+'/data/g3.json', sg)
+// gio.exportG(__dirname+'/data/sg1.json', sg)
 
