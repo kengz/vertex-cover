@@ -133,5 +133,5 @@ for (i = 0; i < E; i++)
 
 
 // export data
-gio.exportG(__dirname+'/data/g3.json')
+// gio.exportG(__dirname+'/data/g3.json', g)
 
