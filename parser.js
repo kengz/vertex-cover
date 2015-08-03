@@ -87,41 +87,6 @@ function graphlib2sigma(g) {
 	return sg
 }
 
-var nn = [
-        {
-            "id": "a",
-            "label": "a",
-            "x": 0.49357415339909494,
-            "y": 0.8861682922579348,
-            "size": 1,
-            "color": "#E73834"
-        },
-        {
-            "id": "b",
-            "label": "b",
-            "x": 0.8328440114855766,
-            "y": 0.7317712595686316,
-            "size": 1,
-            "color": "#E73834"
-        },
-        {
-            "id": "c",
-            "label": "c",
-            "x": 0.7877171724103391,
-            "y": 0.9277649375144392,
-            "size": 1,
-            "color": "#E73834"
-        },
-        {
-            "id": "d",
-            "label": "d",
-            "x": 0.2675070404075086,
-            "y": 0.3196445263456553,
-            "size": 1,
-            "color": "#E73834"
-        }
-    ]
-
 // mutates sigma graph to recolor node n and its edges, with optional color
 function colorSigma(sg, n, color) {
 	color = color || '#78afc0'

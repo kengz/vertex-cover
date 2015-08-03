@@ -4,7 +4,7 @@ var graphlib = require("graphlib")
 var Graph = graphlib.Graph;
 var gio = require(__dirname+'/gio.js')
 
-var g = gio.importG(__dirname+'/data/g2.json')
+var g = gio.importG(__dirname+'/data/g1.json')
 
 // var E = g.edges()
 // console.log(g.nodes())
@@ -37,3 +37,38 @@ function aVC(g) {
 }
 
 // console.log(aVC(g))
+
+
+// brute force MVC: takes a path to graph json, and param k
+// deletes from a combset then check if edgeCount == 0. If true return
+function bruteVC(gpath, k) {
+	// init import of graph for params
+	var g = gio.importG(gpath)
+	var m = 0, nodes = g.nodes(), order = nodes.length, found = false, res = []
+	if (order < k) throw 'order is smaller than k'
+	// try while not found and m <= k
+	while(!found && _.lte(++m, k)) {
+
+		// generate combination
+		_.each(_.combList(order, m), function(indArr){
+			// fresh functional graph for each new indArr
+			g = gio.importG(gpath)
+			_.each(indArr, function(ind){
+				g.removeNode(nodes[ind])
+			})
+			// if is a VC, found while and quit each loop
+			if (g.edgeCount() == 0) {
+				res = _.pullAt(nodes, indArr)
+				found = true
+				return false
+			}
+		})
+	}
+	return {
+		found: found,
+		VC: res,
+		size: m
+	}
+}
+
+// console.log(bruteVC(__dirname+'/data/g1.json', 3))

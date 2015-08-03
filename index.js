@@ -68,7 +68,7 @@ var gio = require(__dirname+'/gio.js')
 // // => `[ { v: 'c', w: 'd' } ]`
 
 // import graph from json, then construct
-var g = gio.importG(__dirname+"/data/g2.json")
+var g = gio.importG(__dirname+"/data/g1.json")
 
 // What nodes are in the graph?
 console.log(g.nodes())
@@ -133,5 +133,5 @@ for (i = 0; i < E; i++)
 
 
 // export data
-// gio.exportG(__dirname+'/data/g3.json', g)
+// gio.exportG(__dirname+'/data/sg1.json', g)
 
