@@ -95,15 +95,15 @@ function bruteVC(jsonify, k) {
 function struction(jsonify, n) {
     var g = graphlib.json.read(jsonify)
         // 1. Identify closed neighborhood of n
-    var closedN = g.neighbors(n)
-    closedN.push(n)
+    var openN = g.neighbors(n)
+    var closedN = openN.push(n)
     var complement = _.difference(g.nodes, closedN)
 
-    var pairs = _.combList(closedN.length, 2)
+    var pairs = _.combList(openN.length, 2)
     var joinedNodes = []
         // for each subset pair indices
     _.map(pairs, function(pairInd) {
-        var pair = _.at(closedN, pairInd)
+        var pair = _.at(openN, pairInd)
             // if is antiedge, add node delim by ',', as 'i,j'
         if (g.edge(pair[0], pair[1]) == undefined) {
             joinedNodes.push(pair)
@@ -149,6 +149,14 @@ function struction(jsonify, n) {
     })
 
     return g
+}
+
+
+// simple Folding from the Measure n Conquer paper
+// 1. add a new node ij if (i,j) is an antiedge in N(v)
+// 2. 
+function folding(jsonify, n) {
+
 }
 
 var jsonify = require(__dirname + '/data/g1.json')
