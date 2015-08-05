@@ -92,20 +92,22 @@ function bruteVC(jsonify, k) {
 // 3. if i != j add an edge (vir, vjs)
 // 4. for every u !\in N[v0] add edge (vij, u) if (vi, u) or (vj, u) is an edge in G
 
-function struction(jsonify, n) {
+function struction(jsonify, v) {
     var g = graphlib.json.read(jsonify)
-        // 1. Identify closed neighborhood of n
-    var openN = g.neighbors(n)
-    var closedN = openN.push(n)
+        // 1. Identify closed neighborhood of v
+    var openN = g.neighbors(v)
+    var closedN = openN.push(v)
     var complement = _.difference(g.nodes, closedN)
 
-    var pairs = _.combList(openN.length, 2)
     var joinedNodes = []
+    var pairs = _.combList(openN.length, 2)
         // for each subset pair indices
     _.map(pairs, function(pairInd) {
-        var pair = _.at(openN, pairInd)
+        var pair = _.at(openN, pairInd),
+            i = pair[0],
+            j = pair[1]
             // if is antiedge, add node delim by ',', as 'i,j'
-        if (g.edge(pair[0], pair[1]) == undefined) {
+        if (g.edge(i, j) == undefined) {
             joinedNodes.push(pair)
             g.setNode(pair.join(','))
         }
@@ -154,15 +156,66 @@ function struction(jsonify, n) {
 
 // simple Folding from the Measure n Conquer paper
 // 1. add a new node ij if (i,j) is an antiedge in N(v)
-// 2. 
-function folding(jsonify, n) {
+// 2. add edges bet. ij and vertices in N(i)-union-N(j)
+// 3. add edge bet. each pair of new vertices
+// 4. remove N[v]
+
+function folding(jsonify, v) {
+    var g = graphlib.json.read(jsonify)
+        // 1. Identify closed neighborhood of v
+    var openN = g.neighbors(v)
+    var closedN = openN.push(v)
+        // var complement = _.difference(g.nodes, closedN)
+    var joinedNodes = []
+    var pairs = _.combList(openN.length, 2)
+        // 1. add ij if (i,j) is antiedge
+    _.map(pairs, function(pairInd) {
+        var pair = _.at(openN, pairInd),
+            i = pair[0],
+            j = pair[1]
+            // if is antiedge, add node delim by ',', as 'i,j'
+        if (g.edge(i, j) == undefined) {
+            joinedNodes.push(pair)
+            g.setNode(pair.join(','))
+                // 2. connect ij to all old neighbors
+            var NiUNj = _.union(g.neighbors(i), g.neighbors(j))
+            _.each(NiUNj, function(u) {
+                g.setEdge(u, pair.join(','))
+            })
+        }
+    })
+
+    // 3. add edge bet.each pair of new vertices
+    var newPairs = _.combList(joinedNodes.length, 2)
+    _.map(newPairs, function(pairInd) {
+        var pair = _.at(joinedNodes, pairInd)
+        var nleft = pair[0].join(','),
+            nright = pair[1].join(',')
+        g.setEdge(nleft, nright)
+    })
+
+    // 4. remove closedN from g
+    _.each(closedN, function(n) {
+        g.removeNode(n)
+    })
+
+    return g
 
 }
 
-var jsonify = require(__dirname + '/data/g1.json')
+
+// sample run
+// function chain(plainpath) {}
+var plainpath = __dirname+'/data/pg1.json'
+var pg = require(plainpath)
+var g = parser.plain2graphlib(pg)
+var jsonify = graphlib.json.write(g)
+
+// var jsonify = require(__dirname + '/data/g1.json')
 console.log(bruteVC(jsonify, 3))
 
 console.log(struction(jsonify, 'a').nodes())
+console.log(folding(jsonify, 'a').nodes())
 
 var res = _.combList(4, 2)
 
