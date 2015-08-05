@@ -97,13 +97,11 @@ function struction(jsonify, v) {
         // 1. Identify closed neighborhood of v
     var openN = g.neighbors(v)
     var closedN = _.clone(openN); closedN.push(v)
-    var complement = _.difference(g.nodes, closedN)
+    var complement = _.difference(g.nodes(), closedN)
     var joinedNodes = []
     var pairs = _.combList(openN.length, 2)
-    console.log(openN, closedN, complement)
         // for each subset pair indices
     _.map(pairs, function(pairInd) {
-    	console.log('pairInd', pairInd)
         var pair = _.at(openN, pairInd),
             i = pair[0],
             j = pair[1]
@@ -117,7 +115,6 @@ function struction(jsonify, v) {
     // 2. take the newly added ndoes with paired indices, enum pairs (in [i, j])
     var newPairs = _.combList(joinedNodes.length, 2)
     _.map(newPairs, function(pairInd) {
-    	console.log('pairInd2', pairInd)
 
         // take pair of [i,r] and [j, s] as left and right
         var pair = _.at(joinedNodes, pairInd)
@@ -215,12 +212,13 @@ function plainSource(plainpath) {
 }
 
 // sample run
-var jsonify = plainSource(__dirname + '/data/pg1.json')
+var jsonify = plainSource(__dirname + '/data/pg3.json')
 
 // var jsonify = require(__dirname + '/data/g1.json')
 // console.log(bruteVC(jsonify, 3))
 
-var g = folding(jsonify, 'e')
+var g = struction(jsonify, 'v')
+// var g = graphlib.json.read(jsonify)
 // console.log(g.nodes())
 var sg = parser.graphlib2sigma(g)
 gio.exportG(__dirname+'/data/sg1.json', sg)
