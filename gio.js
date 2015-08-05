@@ -6,6 +6,7 @@ var fs = require('fs');
 
 function exportG(path, g) {
 	try {
+		if (g.options == {}) throw 'Not graphlib json'
 		fs.writeFile(path, JSON.stringify(graphlib.json.write(g), null, 4))
 	}
 	catch (e) {

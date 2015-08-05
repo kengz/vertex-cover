@@ -16,11 +16,11 @@ gulp.task('start', ['build', 'reload', 'watch']);
 gulp.task('watch', ['reload'], function() {
     gulp.watch('./data/*', ['reload'])
     gulp.watch('./*.html', ['reload'])
-    gulp.watch('./maker.js', ['build'])
+    // gulp.watch('./maker.js', ['build'])
 })
 
 // gulp.task('build', exec.bind('some build command here'))
-gulp.task('build', exec.bind(null, 'node maker.js'))
+gulp.task('build', exec.bind(null, 'node index.js'))
 // Reloading browserSync
 gulp.task('reload', reload);
 

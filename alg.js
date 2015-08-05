@@ -16,7 +16,7 @@ var g = gio.importG(__dirname + '/data/g1.json')
 // console.log(g.nodes())
 // console.log(E)
 
-// console.log(_.isEmpty(['']))
+// console.log(_.isEmpty([',']))
 
 // Approx VC alg. Note this is not MVC, but is a 2-approx
 // 1. init C to empty set
@@ -96,13 +96,14 @@ function struction(jsonify, v) {
     var g = graphlib.json.read(jsonify)
         // 1. Identify closed neighborhood of v
     var openN = g.neighbors(v)
-    var closedN = openN.push(v)
+    var closedN = _.clone(openN); closedN.push(v)
     var complement = _.difference(g.nodes, closedN)
-
     var joinedNodes = []
     var pairs = _.combList(openN.length, 2)
+    console.log(openN, closedN, complement)
         // for each subset pair indices
     _.map(pairs, function(pairInd) {
+    	console.log('pairInd', pairInd)
         var pair = _.at(openN, pairInd),
             i = pair[0],
             j = pair[1]
@@ -116,6 +117,8 @@ function struction(jsonify, v) {
     // 2. take the newly added ndoes with paired indices, enum pairs (in [i, j])
     var newPairs = _.combList(joinedNodes.length, 2)
     _.map(newPairs, function(pairInd) {
+    	console.log('pairInd2', pairInd)
+
         // take pair of [i,r] and [j, s] as left and right
         var pair = _.at(joinedNodes, pairInd)
         var left = pair[0],
@@ -128,11 +131,11 @@ function struction(jsonify, v) {
         // if i = j, r != s, and r, s is an edge in G
         if (i == j && r != s && g.edge(r, s) != undefined) {
             // add an edge (ir, js)
-            g.setEdge(left.join(','), right.join(','))
+            g.setEdge(left.join(','), right.join(','), [left.join(','), right.join(',')].join('-'))
         }
         // 3. if i != j, add adge (ir, js)
         else if (i != j) {
-            g.setEdge(left.join(','), right.join(','))
+            g.setEdge(left.join(','), right.join(','), [left.join(','), right.join(',')].join('-'))
         }
     })
 
@@ -140,7 +143,7 @@ function struction(jsonify, v) {
     _.each(complement, function(u) {
         _.each(joinedNodes, function(ij) {
             if (g.edge(ij[0], u) != undefined || g.edge(ij[1], u) != undefined) {
-                g.setEdge(ij.join(','), u)
+                g.setEdge(ij.join(','), u, [ij.join(','), u].join('-'))
             }
         })
     })
@@ -164,7 +167,7 @@ function folding(jsonify, v) {
     var g = graphlib.json.read(jsonify)
         // 1. Identify closed neighborhood of v
     var openN = g.neighbors(v)
-    var closedN = openN.push(v)
+    var closedN = _.clone(openN); closedN.push(v)
         // var complement = _.difference(g.nodes, closedN)
     var joinedNodes = []
     var pairs = _.combList(openN.length, 2)
@@ -180,7 +183,7 @@ function folding(jsonify, v) {
                 // 2. connect ij to all old neighbors
             var NiUNj = _.union(g.neighbors(i), g.neighbors(j))
             _.each(NiUNj, function(u) {
-                g.setEdge(u, pair.join(','))
+                g.setEdge(u, pair.join(','), [u, pair.join(',')].join('-'))
             })
         }
     })
@@ -191,7 +194,7 @@ function folding(jsonify, v) {
         var pair = _.at(joinedNodes, pairInd)
         var nleft = pair[0].join(','),
             nright = pair[1].join(',')
-        g.setEdge(nleft, nright)
+        g.setEdge(nleft, nright, [nleft, nright].join('-'))
     })
 
     // 4. remove closedN from g
@@ -203,20 +206,42 @@ function folding(jsonify, v) {
 
 }
 
+// from path of plain graph return a parsed plain2graphlib json
+function plainSource(plainpath) {
+    var pg = require(plainpath)
+    var g = parser.plain2graphlib(pg)
+    var jsonify = graphlib.json.write(g)
+    return jsonify
+}
 
 // sample run
-// function chain(plainpath) {}
-var plainpath = __dirname+'/data/pg1.json'
-var pg = require(plainpath)
-var g = parser.plain2graphlib(pg)
-var jsonify = graphlib.json.write(g)
+var jsonify = plainSource(__dirname + '/data/pg1.json')
 
 // var jsonify = require(__dirname + '/data/g1.json')
-console.log(bruteVC(jsonify, 3))
+// console.log(bruteVC(jsonify, 3))
 
-console.log(struction(jsonify, 'a').nodes())
-console.log(folding(jsonify, 'a').nodes())
+var g = folding(jsonify, 'e')
+// console.log(g.nodes())
+var sg = parser.graphlib2sigma(g)
+gio.exportG(__dirname+'/data/sg1.json', sg)
+// console.log(folding(jsonify, 'a').nodes())
 
-var res = _.combList(4, 2)
 
-console.log(res)
+// var tuple = {[',']}
+
+// var Heap = require("collections/heap");
+
+// var minHeap = new Heap([], null, function (a, b) {
+//     return b - a ;
+// });
+
+// minHeap.push(6)
+// minHeap.push(6)
+// minHeap.push(4)
+// minHeap.push(8)
+// // console.log(minHeap.pop())
+// // console.log(minHeap.pop())
+// // console.log(minHeap.pop())
+// console.log(minHeap.toArray())
+// // 2
+// minHeap.peek();

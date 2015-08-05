@@ -13,7 +13,7 @@ var gio = require(__dirname+'/gio.js')
 // sample data
 var nodes = ['a','b','c','d','e']
 var edges = [
-'a-b:1', 'a-c:2', 'a-d:3', 'b-c:4', 'b-e:5', 'c-e:6'
+'a-b', 'a-c', 'a-d', 'b-c', 'b-e', 'c-e'
 ]
 var pg = {
 	nodes: nodes,
@@ -25,7 +25,7 @@ function plain2graphlib(pg) {
 	var g = new Graph({directed: false})
 	_.each(pg.nodes, g.setNode, g)
 	_.each(pg.edges, function(e){
-		g.setEdge.apply(g, e.split(/\-|\:/))
+		g.setEdge.apply(g, _.union(e.split(/\-/), [e]))
 	})
 	// returns a functional graphlib graph
 	return g
@@ -42,7 +42,7 @@ function graphlib2plain(g) {
 	var edges = []
 	console.log
 	_.each(g.edges, function(e){
-		edges.push(e.v+'-'+e.w+':'+e.value)
+		edges.push(e.v+'-'+e.w)
 	})
 	return {
 		nodes: nodes,
@@ -76,7 +76,7 @@ function graphlib2sigma(g) {
 	var edges = g.edges
 	_.map(edges, function(e){
 		var obj = {
-			id: e.value,
+			id: e.v+'-'+e.w,
 			source: e.v,
 			target: e.w,
 			size: 1,
@@ -124,5 +124,6 @@ module.exports = {
 // console.log(sg.nodes)
 // console.log(sg.edges)
 
+// gio.exportG(__dirname+'/data/g1.json', g)
 // gio.exportG(__dirname+'/data/sg1.json', sg)
 

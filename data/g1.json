@@ -30,32 +30,32 @@
         {
             "v": "a",
             "w": "b",
-            "value": "1"
+            "value": "a-b"
         },
         {
             "v": "a",
             "w": "c",
-            "value": "2"
+            "value": "a-c"
         },
         {
             "v": "a",
             "w": "d",
-            "value": "3"
+            "value": "a-d"
         },
         {
             "v": "b",
             "w": "c",
-            "value": "4"
+            "value": "b-c"
         },
         {
             "v": "b",
             "w": "e",
-            "value": "5"
+            "value": "b-e"
         },
         {
             "v": "c",
             "w": "e",
-            "value": "6"
+            "value": "c-e"
         }
     ]
 }

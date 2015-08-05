@@ -23,9 +23,10 @@
   "homepage": "https://github.com/kengz/vertex-cover#readme",
   "dependencies": {
     "browser-sync": "^2.8.0",
+    "collections": "^1.2.3",
     "graphlib": "^1.0.7",
     "gulp": "^3.9.0",
-    "lomath": "^0.2.1",
+    "lomath": "^0.2.2",
     "q": "^1.4.1",
     "sigma": "^1.0.3"
   }
